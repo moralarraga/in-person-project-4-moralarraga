@@ -74,6 +74,19 @@ const filterButtons = document.querySelectorAll('.filter-btn');
 //const projectCards = null; // Replace null with your selector
 const projectCards = document.querySelectorAll('.project-card');
 
+// Function to filter projects
+function filterProjects(category) {
+    projectCards.forEach(card => {
+        const cardCategory = card.getAttribute('data-category');
+
+        if (category === 'all' || cardCategory === category) {
+            card.style.display = 'block'; // Show matching cards
+        } else {
+            card.style.display = 'none'; // Hide non-matching cards
+        }
+    });
+}
+
 // TODO: Add click event listeners to filter buttons
 // For each button:
 //   1. Add 'click' event listener
@@ -86,7 +99,19 @@ const projectCards = document.querySelectorAll('.project-card');
 //   6. Use style.display to show ('block') or hide ('none') cards
 
 // Hint: To get a data attribute, use element.dataset.filter or element.getAttribute('data-filter')
+filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        // Remove active class from all buttons
+        filterButtons.forEach(btn => btn.classList.remove('active'));
 
+        // Add active class to clicked button
+        button.classList.add('active');
+
+        // Get filter value and filter projects
+        const filterValue = button.getAttribute('data-filter');
+        filterProjects(filterValue);
+    });
+});
 
 // ============================================
 // PART 3: MOBILE MENU TOGGLE (10 min)
