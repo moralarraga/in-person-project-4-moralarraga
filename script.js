@@ -119,19 +119,34 @@ filterButtons.forEach(button => {
 
 // TODO: Select the mobile menu toggle button
 // Hint: Use querySelector with the class '.nav-toggle'
-const navToggle = null; // Replace null with your selector
+//const navToggle = null; // Replace null with your selector
+const navToggle = document.querySelector('.nav-toggle');
 
 // TODO: Select the navigation menu
 // Hint: Use querySelector with the class '.nav-menu'
-const navMenu = null; // Replace null with your selector
+//const navMenu = null; // Replace null with your selector
+const navMenu = document.querySelector('.nav-menu');
+
 
 // TODO: Add click event listener to toggle button
 // When clicked:
 //   1. Toggle 'active' class on navMenu
 //   2. Toggle 'active' class on navToggle (for hamburger animation)
+// Toggle mobile menu
+navToggle.addEventListener('click', () => {
+    navMenu.classList.toggle('active');
+    navToggle.classList.toggle('active');
+});
 
 // BONUS: Close menu when a nav link is clicked
 // TODO: Add click listeners to nav links to close the mobile menu
+// Close menu when nav link is clicked
+navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        navMenu.classList.remove('active');
+        navToggle.classList.remove('active');
+    });
+});
 
 
 // ============================================
