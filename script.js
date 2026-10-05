@@ -7,7 +7,10 @@
 
 // TODO: Select all navigation links
 // Hint: Use querySelectorAll with the class '.nav-link'
-const navLinks = null; // Replace null with your selector
+//const navLinks = null; // Replace null with your selector
+// Select all navigation links
+const navLinks = document.querySelectorAll('.nav-link');
+
 
 // TODO: Add click event listeners to each nav link
 // Hint: Use forEach to loop through navLinks
@@ -16,11 +19,46 @@ const navLinks = null; // Replace null with your selector
 //   2. Prevent default link behavior (preventDefault)
 //   3. Get the href attribute to find target section
 //   4. Use scrollIntoView() to smoothly scroll to that section
+navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent default jump
+
+        // Get the target section ID from href
+        const targetId = link.getAttribute('href');
+        const targetSection = document.querySelector(targetId);
+
+        // Smooth scroll to target
+        targetSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    });
+});
 
 // BONUS: Update active nav link on scroll
 // TODO: Add scroll event listener to window
 // Hint: As user scrolls, highlight the nav link for the current section
+window.addEventListener('scroll', () => {
+    const sections = document.querySelectorAll('section');
+    const scrollPos = window.scrollY + 100;
 
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
+        const sectionId = section.getAttribute('id');
+
+        if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+            // Remove active from all links
+            navLinks.forEach(link => link.classList.remove('active'));
+
+            // Add active to current section's link
+            const activeLink = document.querySelector(`.nav-link[href="#${sectionId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+    });
+});
 
 // ============================================
 // PART 2: PROJECT FILTERING (20 min)
@@ -28,11 +66,13 @@ const navLinks = null; // Replace null with your selector
 
 // TODO: Select all filter buttons
 // Hint: Use querySelectorAll with the class '.filter-btn'
-const filterButtons = null; // Replace null with your selector
+//const filterButtons = null; // Replace null with your selector
+const filterButtons = document.querySelectorAll('.filter-btn');
 
 // TODO: Select all project cards
 // Hint: Use querySelectorAll with the class '.project-card'
-const projectCards = null; // Replace null with your selector
+//const projectCards = null; // Replace null with your selector
+const projectCards = document.querySelectorAll('.project-card');
 
 // TODO: Add click event listeners to filter buttons
 // For each button:
