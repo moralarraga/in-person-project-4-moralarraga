@@ -155,7 +155,9 @@ navLinks.forEach(link => {
 
 // TODO: Select all skill progress bars
 // Hint: Use querySelectorAll with the class '.skill-progress'
-const skillBars = null; // Replace null with your selector
+//const skillBars = null; // Replace null with your selector
+// Select all skill progress bars
+const skillBars = document.querySelectorAll('.skill-progress');
 
 // TODO: Create a function to animate skills when they come into view
 // Hint: Add a scroll event listener
@@ -163,6 +165,26 @@ const skillBars = null; // Replace null with your selector
 //   1. For each skill bar, animate its width from 0 to the --skill-level value
 //   2. Use the style property to set the width
 //   3. Add a CSS transition for smooth animation
+// Animate skills on scroll
+function animateSkills() {
+    const skillsSection = document.querySelector('#skills');
+    const skillsPosition = skillsSection.getBoundingClientRect().top;
+    const screenPosition = window.innerHeight;
+
+    if (skillsPosition < screenPosition) {
+        skillBars.forEach(bar => {
+            const skillLevel = bar.style.getPropertyValue('--skill-level');
+            bar.style.width = skillLevel;
+        });
+    }
+}
+
+// Add scroll listener
+window.addEventListener('scroll', animateSkills);
+
+// Run once on load in case skills are already visible
+animateSkills();
+
 
 // Advanced: Use Intersection Observer for better performance (optional)
 
@@ -173,19 +195,25 @@ const skillBars = null; // Replace null with your selector
 
 // TODO: Select the contact form
 // Hint: Use querySelector with the id '#contact-form'
-const contactForm = null; // Replace null with your selector
+//const contactForm = null; // Replace null with your selector
+const contactForm = document.querySelector('#contact-form');
 
 // TODO: Select form inputs
-const nameInput = null; // querySelector for #name
-const emailInput = null; // querySelector for #email
-const messageInput = null; // querySelector for #message
+//const nameInput = null; // querySelector for #name
+//const emailInput = null; // querySelector for #email
+//const messageInput = null; // querySelector for #message
+const nameInput = document.querySelector('#name');
+const emailInput = document.querySelector('#email');
+const messageInput = document.querySelector('#message');
+
 
 // TODO: Create validation functions
-
 // Function to validate email format
 function isValidEmail(email) {
     // Hint: Use a simple regex or check for @ and .
     // Example: return email.includes('@') && email.includes('.');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
     return false; // Replace with actual validation
 }
 
@@ -197,6 +225,20 @@ function showError(input, message) {
     // 3. Add a class 'error-message' for styling
     // 4. Append it after the input field
     // Hint: Use createElement, classList.add, and appendChild
+    clearError(input);
+    
+    // Create error element
+    const error = document.createElement('span');
+    error.className = 'error-message';
+    error.textContent = message;
+
+    // Add error class to input
+    input.classList.add('error');
+    input.classList.remove('success');
+
+    // Append error after input
+    input.parentElement.appendChild(error);
+
 }
 
 // Function to clear error message
@@ -205,20 +247,52 @@ function clearError(input) {
     // 1. Find the error message element (next sibling)
     // 2. Remove it from the DOM
     // Hint: Use querySelector or nextElementSibling and remove()
+    const error = input.parentElement.querySelector('.error-message');
+    if (error) {
+        error.remove();
+    }
+    input.classList.remove('error');
+}
+
+function showSuccess(input) {
+    clearError(input);
+    input.classList.add('success');
+    input.classList.remove('error');
 }
 
 // TODO: Add 'input' event listeners for real-time validation
 // For name input:
 //   - Check if value length > 0
 //   - Show/clear error accordingly
+nameInput.addEventListener('input', () => {
+    if (nameInput.value.trim().length < 2) {
+        showError(nameInput, 'Name must be at least 2 characters');
+    } else {
+        showSuccess(nameInput);
+    }
+});
 
 // For email input:
 //   - Check if email is valid using isValidEmail()
 //   - Show/clear error accordingly
+emailInput.addEventListener('input', () => {
+    if (!isValidEmail(emailInput.value)) {
+        showError(emailInput, 'Please enter a valid email address');
+    } else {
+        showSuccess(emailInput);
+    }
+});
 
 // For message input:
 //   - Check if value length > 10
 //   - Show/clear error accordingly
+messageInput.addEventListener('input', () => {
+    if (messageInput.value.trim().length < 10) {
+        showError(messageInput, 'Message must be at least 10 characters');
+    } else {
+        showSuccess(messageInput);
+    }
+});
 
 // TODO: Add 'submit' event listener to form
 // When submitted:
@@ -230,6 +304,51 @@ function clearError(input) {
 //   4. If invalid:
 //      - Show error messages
 //      - Don't submit
+
+
+// Select form and inputs
+contactForm.addEventListener('submit', (e) => {
+    e.preventDefault(); // Prevent actual submission
+
+    // Validate all fields
+    let isValid = true;
+
+    if (nameInput.value.trim().length < 2) {
+        showError(nameInput, 'Name must be at least 2 characters');
+        isValid = false;
+    }
+
+    if (!isValidEmail(emailInput.value)) {
+        showError(emailInput, 'Please enter a valid email address');
+        isValid = false;
+    }
+
+    if (messageInput.value.trim().length < 10) {
+        showError(messageInput, 'Message must be at least 10 characters');
+        isValid = false;
+    }
+
+    // If valid, show success
+    if (isValid) {
+        // Create success message
+        const successMsg = document.createElement('div');
+        successMsg.className = 'success-message';
+        successMsg.textContent = 'Thank you! Your message has been sent successfully.';
+
+        // Append after form
+        contactForm.appendChild(successMsg);
+
+        // Clear form after 2 seconds
+        setTimeout(() => {
+            contactForm.reset();
+            successMsg.remove();
+            document.querySelectorAll('.success').forEach(input => {
+                input.classList.remove('success');
+            });
+        }, 3000);
+    }
+});
+
 
 
 // ============================================
